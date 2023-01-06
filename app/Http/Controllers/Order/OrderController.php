@@ -8,6 +8,7 @@ use App\Http\Requests\Order\LocationOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Models\Order\Order;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class OrderController extends Controller
@@ -51,5 +52,24 @@ class OrderController extends Controller
         $order->update(['status' => Order::STATUS_DELIVERED]);
 
         return new OrderResource($order);
+    }
+
+    /**
+     * @param Order $order
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function cancel(Order $order, Request $request): JsonResponse
+    {
+        if ($order->status !== Order::STATUS_NEW)
+            return response()->json(['massage' => __('messages.error_canceled')]);
+
+        if ($order->user_id === $request->user()->id) {
+            $order->update(['status', Order::STATUS_CANCEL]);
+
+            return response()->json(['massage' => __('messages.success_canceled')]);
+        }
+
+        return response()->json(['massage' => __('messages.not_for_you_order')]);
     }
 }
