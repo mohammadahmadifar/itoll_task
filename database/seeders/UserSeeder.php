@@ -15,32 +15,32 @@ class UserSeeder extends Seeder
     public function run()
     {
         $user = new User();
-        $user->name = 'driver1';
+        $user->username = 'driver1';
         $user->saveQuietly();
         $user->assignRole('driver');
 
         $user = new User();
-        $user->name = 'driver2';
+        $user->username = 'driver2';
         $user->saveQuietly();
         $user->assignRole('driver');
 
         $user = new User();
-        $user->name = 'driver3';
+        $user->username = 'driver3';
         $user->saveQuietly();
         $user->assignRole('driver');
 
         $user = new User();
-        $user->name = 'customer_1';
+        $user->username = 'customer1';
         $user->saveQuietly();
         $user->assignRole('customer');
 
         $user = new User();
-        $user->name = 'customer_2';
+        $user->username = 'customer2';
         $user->saveQuietly();
         $user->assignRole('customer');
 
         $user = new User();
-        $user->name = 'customer_3';
+        $user->username = 'customer3';
         $user->saveQuietly();
         $user->assignRole('customer');
     }
