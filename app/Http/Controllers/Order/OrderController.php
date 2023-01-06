@@ -38,4 +38,18 @@ class OrderController extends Controller
 
         return new OrderResource($order);
     }
+
+    /**
+     * @param Order $order
+     * @param LocationOrderRequest $request
+     * @return OrderResource|JsonResponse
+     */
+    public function delivered(Order $order, LocationOrderRequest $request): OrderResource|JsonResponse
+    {
+        if ((int) $order->driver_id !== (int) $request->user()->id)
+            return response()->json(['massage' => __('messages.not_for_you_order_driver')]);
+        $order->update(['status' => Order::STATUS_DELIVERED]);
+
+        return new OrderResource($order);
+    }
 }
