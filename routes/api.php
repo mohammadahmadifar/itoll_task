@@ -22,6 +22,7 @@ Route::middleware('drivers')->group(function () {
     Route::post('send-location', [DriverController::class, 'sendLocation']);
     Route::post('orders/assign/{order}', [OrderController::class, 'assign']);
     Route::post('orders/delivered/{order}', [OrderController::class, 'delivered']);
+    Route::get('orders/new-orders', [OrderController::class, 'newOrder']);
 });
 
 Route::middleware('customers')->group(function () {

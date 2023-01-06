@@ -9,6 +9,7 @@ use App\Http\Resources\Order\OrderResource;
 use App\Models\Order\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class OrderController extends Controller
@@ -47,7 +48,7 @@ class OrderController extends Controller
      */
     public function delivered(Order $order, LocationOrderRequest $request): OrderResource|JsonResponse
     {
-        if ((int) $order->driver_id !== (int) $request->user()->id)
+        if ((int)$order->driver_id !== (int)$request->user()->id)
             return response()->json(['massage' => __('messages.not_for_you_order_driver')]);
         $order->update(['status' => Order::STATUS_DELIVERED]);
 
@@ -63,13 +64,21 @@ class OrderController extends Controller
     {
         if ($order->status !== Order::STATUS_NEW)
             return response()->json(['massage' => __('messages.error_canceled')]);
-
         if ($order->user_id === $request->user()->id) {
             $order->update(['status', Order::STATUS_CANCEL]);
 
             return response()->json(['massage' => __('messages.success_canceled')]);
         }
-
         return response()->json(['massage' => __('messages.not_for_you_order')]);
+    }
+
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function newOrder(): AnonymousResourceCollection
+    {
+        return OrderResource::collection(
+            Order::query()->where('status', Order::STATUS_NEW)->paginate()
+        );
     }
 }
