@@ -30,17 +30,17 @@ class UserSeeder extends Seeder
         $user->assignRole('driver');
 
         $user = new User();
-        $user->username = 'customer_1';
+        $user->username = 'customer1';
         $user->saveQuietly();
         $user->assignRole('customer');
 
         $user = new User();
-        $user->username = 'customer_2';
+        $user->username = 'customer2';
         $user->saveQuietly();
         $user->assignRole('customer');
 
         $user = new User();
-        $user->username = 'customer_3';
+        $user->username = 'customer3';
         $user->saveQuietly();
         $user->assignRole('customer');
     }
