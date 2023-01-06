@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\CreateOrderRequest;
+use App\Http\Requests\Order\LocationOrderRequest;
 use App\Http\Resources\Order\OrderResource;
+use App\Models\Order\Order;
+use Illuminate\Http\JsonResponse;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class OrderController extends Controller
@@ -20,5 +23,19 @@ class OrderController extends Controller
         $validated['location_receive'] = new Point($request->get('longitude_receive'), $request->get('latitude_receive'));
         $validated['location_delivery'] = new Point($request->get('longitude_delivery'), $request->get('latitude_delivery'));
         return new OrderResource($request->user()->orders()->create($validated)->fresh());
+    }
+
+    /**
+     * @param Order $order
+     * @param LocationOrderRequest $request
+     * @return OrderResource|JsonResponse
+     */
+    public function assign(Order $order, LocationOrderRequest $request): OrderResource|JsonResponse
+    {
+        if ($order->driver_id !== null)
+            return response()->json(['massage' => __('messages.error_assign_drivers')]);
+        $order->update(['driver_id' => $request->user()->id, 'status' => Order::STATUS_RECEIVED]);
+
+        return new OrderResource($order);
     }
 }
