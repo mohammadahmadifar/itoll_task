@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Events\UpdateLocationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\CreateOrderRequest;
 use App\Http\Requests\Order\LocationOrderRequest;
@@ -24,6 +25,7 @@ class OrderController extends Controller
         $validated = $request->validated();
         $validated['location_receive'] = new Point($request->get('longitude_receive'), $request->get('latitude_receive'));
         $validated['location_delivery'] = new Point($request->get('longitude_delivery'), $request->get('latitude_delivery'));
+
         return new OrderResource($request->user()->orders()->create($validated)->fresh());
     }
 
@@ -37,6 +39,7 @@ class OrderController extends Controller
         if ($order->driver_id !== null)
             return response()->json(['massage' => __('messages.error_assign_drivers')]);
         $order->update(['driver_id' => $request->user()->id, 'status' => Order::STATUS_RECEIVED]);
+        event(new UpdateLocationEvent($request->validated()));
 
         return new OrderResource($order);
     }
@@ -51,6 +54,7 @@ class OrderController extends Controller
         if ((int)$order->driver_id !== (int)$request->user()->id)
             return response()->json(['massage' => __('messages.not_for_you_order_driver')]);
         $order->update(['status' => Order::STATUS_DELIVERED]);
+        event(new UpdateLocationEvent($request->validated()));
 
         return new OrderResource($order);
     }
