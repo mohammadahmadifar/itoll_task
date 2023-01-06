@@ -26,5 +26,6 @@ Route::middleware('drivers')->group(function () {
 
 Route::middleware('customers')->group(function () {
     Route::post('orders', [OrderController::class, 'store']);
+    Route::get('orders/cancel/{order}', [OrderController::class, 'cancel']);
 });
 
