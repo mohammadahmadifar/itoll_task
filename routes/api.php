@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\User\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\User\DriverController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('get-token', [AuthController::class, 'getToken']);
+
+Route::middleware('drivers')->group(function () {
+    Route::post('send-location', [DriverController::class, 'sendLocation']);
+});
+
