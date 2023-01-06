@@ -86,12 +86,11 @@ class OrderController extends Controller
         );
     }
 
-    /**
-     * @param int $id
-     * @return OrderResource
-     */
-    public function show(int $id): OrderResource
+
+    public function show(Order $order)
     {
-        return new OrderResource(Order::query()->where('id', $id)->with('driverLocation')->first());
+        if($order->status === Order::STATUS_DELIVERED)
+            return response()->json(['massage' => __('messages.order_delivered')]);
+        return new OrderResource(Order::query()->where('id', $order->id)->with('driverLocation')->first());
     }
 }

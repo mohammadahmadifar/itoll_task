@@ -18,7 +18,6 @@ class DriverResource extends JsonResource
     {
         return [
             'location' => $this->location,
-            'updated' => $this->updated_at,
         ];
     }
 }
