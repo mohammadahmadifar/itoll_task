@@ -4,16 +4,21 @@ namespace App\Http\Resources\User;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property array $location
+ * @property string $updated_at
+ */
 class DriverResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param $request
+     * @return array
      */
-    public function toArray($request)
+    public function toArray($request):array
     {
-        return parent::toArray($request);
+        return [
+            'location' => $this->location,
+            'updated' => $this->updated_at,
+        ];
     }
 }

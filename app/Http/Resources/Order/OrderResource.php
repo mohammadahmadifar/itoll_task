@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Order;
 
+use App\Http\Resources\User\AnalystResource;
+use App\Http\Resources\User\DriverResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -40,6 +42,12 @@ class OrderResource extends JsonResource
             'mobile_sender' => $this->mobile_sender,
             'name_delivery' => $this->name_delivery,
             'mobile_delivery' => $this->mobile_delivery,
+            'location' => $this->whenLoaded(
+                'driverLocation',
+                function () {
+                    return new DriverResource($this->driverLocation);
+                }
+            ),
         ];
     }
 }

@@ -85,4 +85,13 @@ class OrderController extends Controller
             Order::query()->where('status', Order::STATUS_NEW)->paginate()
         );
     }
+
+    /**
+     * @param int $id
+     * @return OrderResource
+     */
+    public function show(int $id): OrderResource
+    {
+        return new OrderResource(Order::query()->where('id', $id)->with('driverLocation')->first());
+    }
 }
