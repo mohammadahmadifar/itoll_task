@@ -28,5 +28,5 @@ class Driver extends Model
     /**
      * @var string[]
      */
-    protected $fillable = ['location'];
+    protected $fillable = ['location','user_id'];
 }

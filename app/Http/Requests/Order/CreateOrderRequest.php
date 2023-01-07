@@ -24,6 +24,7 @@ class CreateOrderRequest extends FormRequest
             'mobile_sender' => ['required', 'string'],
             'name_delivery' => ['required', 'string'],
             'mobile_delivery' => ['required', 'string'],
+            'url_webhook' => [ 'string'],
         ];
     }
 }

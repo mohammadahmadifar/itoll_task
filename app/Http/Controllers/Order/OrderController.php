@@ -66,7 +66,7 @@ class OrderController extends Controller
     public function delivered(Order $order, LocationOrderRequest $request): OrderResource|JsonResponse
     {
         if ((int)$order->driver_id !== (int)$request->user()->id)
-            return response()->json(['massage' => __('messages.not_for_you_order_driver')]);
+            return response()->json(['massage' => __('messages.not_for_you_order_driver'), ResponseAlias::HTTP_FORBIDDEN]);
         $order->update(['status' => Order::STATUS_DELIVERED]);
         event(new UpdateLocationEvent($request->validated()));
 
@@ -87,7 +87,7 @@ class OrderController extends Controller
 
             return response()->json(['massage' => __('messages.success_canceled')]);
         }
-        return response()->json(['massage' => __('messages.not_for_you_order')]);
+        return response()->json(['massage' => __('messages.not_for_you_order'), ResponseAlias::HTTP_FORBIDDEN]);
     }
 
     /**

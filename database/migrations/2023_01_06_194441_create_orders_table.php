@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('address_delivery');
             $table->string('name_delivery');
             $table->string('mobile_delivery');
+            $table->string('url_webhook')->nullable();
             $table->foreignId('driver_id')->nullable()->references('id')->on('users');
             $table->enum('status', Order::$statuses)->comment(implode(',', Order::$statuses));
             $table->timestamps();

@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Order;
 
-use App\Http\Resources\User\AnalystResource;
 use App\Http\Resources\User\DriverResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,6 +19,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string $mobile_delivery
  * @property mixed $driver
  * @property mixed $user
+ * @property string $url_webhook
  */
 class OrderResource extends JsonResource
 {
@@ -42,6 +42,7 @@ class OrderResource extends JsonResource
             'mobile_sender' => $this->mobile_sender,
             'name_delivery' => $this->name_delivery,
             'mobile_delivery' => $this->mobile_delivery,
+            'url_webhook' => $this->url_webhook,
             'location' => $this->whenLoaded(
                 'driverLocation',
                 function () {
