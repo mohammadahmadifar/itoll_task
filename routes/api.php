@@ -20,13 +20,13 @@ Route::post('get-token', [AuthController::class, 'getToken']);
 
 Route::middleware('drivers')->group(function () {
     Route::post('send-location', [DriverController::class, 'sendLocation']);
-    Route::post('orders/assign/{order}', [OrderController::class, 'assign']);
+    Route::post('orders/assign/{id}', [OrderController::class, 'assign']);
     Route::post('orders/delivered/{order}', [OrderController::class, 'delivered']);
     Route::get('orders/new-orders', [OrderController::class, 'newOrder']);
 });
 
 Route::middleware('customers')->group(function () {
-    Route::post('orders', [OrderController::class, 'store']);
+    Route::apiResource('orders', OrderController::class)->only('store', 'show');
     Route::get('orders/cancel/{order}', [OrderController::class, 'cancel']);
 });
 

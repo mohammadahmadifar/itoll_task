@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Order;
 
 use App\Events\UpdateLocationEvent;
+use App\Exceptions\CantAssignOrderException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\CreateOrderRequest;
 use App\Http\Requests\Order\LocationOrderRequest;
@@ -11,7 +12,9 @@ use App\Models\Order\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use MatanYadaev\EloquentSpatial\Objects\Point;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class OrderController extends Controller
 {
@@ -30,18 +33,29 @@ class OrderController extends Controller
     }
 
     /**
-     * @param Order $order
+     * @param int $id
      * @param LocationOrderRequest $request
      * @return OrderResource|JsonResponse
      */
-    public function assign(Order $order, LocationOrderRequest $request): OrderResource|JsonResponse
+    public function assign(int $id, LocationOrderRequest $request): OrderResource|JsonResponse
     {
-        if ($order->driver_id !== null)
-            return response()->json(['massage' => __('messages.error_assign_drivers')]);
-        $order->update(['driver_id' => $request->user()->id, 'status' => Order::STATUS_RECEIVED]);
-        event(new UpdateLocationEvent($request->validated()));
+        DB::beginTransaction();
+        try {
+            $order = Order::query()->where('id', $id)->whereNull('driver_id')->lockForUpdate()->first();
+            if (!$order)
+                throw new CantAssignOrderException();
+            $order->update(['driver_id' => $request->user()->id, 'status' => Order::STATUS_RECEIVED]);
+            DB::commit();
+            event(new UpdateLocationEvent($request->validated()));
 
-        return new OrderResource($order);
+            return new OrderResource($order);
+        } catch (\Throwable $t) {
+            DB::rollBack();
+            return response()->json(
+                ['massage' => __('messages.assign_failed')],
+                ResponseAlias::HTTP_BAD_REQUEST
+            );
+        }
     }
 
     /**
@@ -84,5 +98,17 @@ class OrderController extends Controller
         return OrderResource::collection(
             Order::query()->where('status', Order::STATUS_NEW)->paginate()
         );
+    }
+
+
+    /**
+     * @param Order $order
+     * @return OrderResource|JsonResponse
+     */
+    public function show(Order $order): OrderResource|JsonResponse
+    {
+        if ($order->status === Order::STATUS_DELIVERED)
+            return response()->json(['massage' => __('messages.order_delivered')]);
+        return new OrderResource(Order::query()->where('id', $order->id)->with('driverLocation')->first());
     }
 }

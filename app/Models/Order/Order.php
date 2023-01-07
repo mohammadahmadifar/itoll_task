@@ -2,10 +2,12 @@
 
 namespace App\Models\Order;
 
+use App\Models\User\Driver;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\SpatialBuilder;
 
@@ -66,5 +68,13 @@ class Order extends Model
     public function driver(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function driverLocation():HasOne
+    {
+        return $this->hasOne(Driver::class,'id','driver_id');
     }
 }

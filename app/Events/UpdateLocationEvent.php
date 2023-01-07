@@ -11,9 +11,7 @@ class UpdateLocationEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * Create a new event instance.
-     *
-     * @return void
+     * @param array $request
      */
     public function __construct(array $request)
     {
