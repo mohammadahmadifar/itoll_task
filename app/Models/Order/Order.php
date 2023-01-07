@@ -52,6 +52,7 @@ class Order extends Model
         'mobile_sender',
         'name_delivery',
         'mobile_delivery',
+        'url_webhook',
     ];
 
     /**
